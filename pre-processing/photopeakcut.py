@@ -1,11 +1,19 @@
-# Firas Abouzahr 09-29-23
+# Firas Abouzahr 10-03-23
 
 ########################################################################
 ########################################################################
 '''
-This script imposes a photopeak cut
-This is a test of git
+Physics Motivation:
+When a gamma enters into a scintillator it will either undergo photoelectric absorption, where the gamma fully deposits its 511 keV energy into the crystal,
+or a compton scatter, where it scatters off an electron and only deposits some of its energy. In an energy spectrum, photoelectric absorption creates a photopeak,
+a guassian peak center around 511 keV. The compton scatters manifest as a continuous shoulder to the left of the peak. Imposing a photopeak cut, only keeping datapoints
+whose energies fall within some number of standard deviations within the photopeak. This ensures we do not take too much data from the compton shoulder, which blurs
+the data and makes it difficult to reconstruct the line-of-repsonse.
 
+DOI Motivation:
+Moreover, for DOI, where location of the photopeak is one of the key factors to distinguish between different depths, isolating data in the photopeak is essential.
+This is because while the photopeaks of each SiPM readout are typically separated, the compton shoulders will at least partially overlap. Hence, performing a
+photopeak/energy cut on our data helps our algorithim better identify DOI.
 '''
 #######################################################################
 #######################################################################
