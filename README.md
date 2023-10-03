@@ -4,7 +4,7 @@ error, the mispositioning of tomographic lines that connect two back-to-back gam
 interacted at the center of each of the crystals in which they deposited their energy. Hence, when we draw the LOR between the two gammas, we connect the centers of the crystals.
 However, oftentimes, the gammas will interact at different depths. For instance, one of the photons may deposit its energy at the front of a crystal while the other deposits 
 its energy closer to the back of another crystal. In this case, naively drawing the tomographic line to connect the centers of the crystals would incorrectly localize where the annihilation event 
-occurred. The importance of high-resolution image reconstruction calls for effective and efficient methods of determining DOI! Statistical analysis of experimental observables illustrate that
+occurred. The importance of high-resolution image reconstruction calls for effective and efficient methods of determining DOI! Specialized PET scanners that utilize dual-ended readout, a PET scanner with SiPMs coupled on both sides of the scintillator arrays. Statistical analysis of experimental data from dual-ended readout illustrate that
 certain computed quantites change at different depths allowing us to sometimes distinguish between different DOIs and correct parallax error. Results from the analysis have already shown that DOI resolution, a measure of how well our detectors and corresponding analysis can identify DOI, is a function of crystal surface roguhness (more on this later)! In order to optimize the ability and rapidity of 
 identifying DOI, we employ machine learning.
 
