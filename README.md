@@ -13,7 +13,7 @@ This readme document will:
 2. Illustrate different pre-processing, data transformations, and more that we conduct on our datasets before training an algorithim to identify DOI with the [pre-processing](/pre-processing/) directory.
 3. Show how we can begin training algorithims on processed datasets, assess the performance of an algorithim, the importance of various features, and more. Here we will use the [Machine-learning](/Machine-Learning/) and [Assessment](/Assessment/) directories. 
 
-All of these directories utilize functions from the a suite of header files. For information on these header files, check out the [Headers](/Headers/) directory above.
+All of these directories utilize functions from a suite of header files. For information on these header files, check out the [Headers](/Headers/) directory above.
 
 Throughout this document, we will also show how to cohesively use all of these scripts together and execute the shell scripts to automate the entire process. For more technical details on the physics, analysis, machine learning, and more, see my associated report on this research: [I will link it here when its done!]. Each directory will also have its own documentation with some additional discussion and walk through.
 
