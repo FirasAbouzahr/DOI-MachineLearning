@@ -10,7 +10,7 @@ identifying DOI, we employ machine learning.
 
 This readme document will:
 1. Walk through the basic statistical analysis we can conduct on experimental observables to distinguish DOIs and the general results as well as how to reproduce these results using the python scripts in the [Analysis](/Analysis/) directory. 
-2. Illustrate different pre-processing, data transformations, and more that we conduct on our datasets before training an algorithim to identify DOI with the [pre-processing](/pre-processing/) directory.
+2. Illustrate different pre-processing, data transformations, and more that we conduct on our datasets before training an algorithim to identify DOI with the [Processing](/Processing/) directory.
 3. Show how we can begin training algorithims on processed datasets, assess the performance of an algorithim, the importance of various features, and more. Here we will use the [Machine-learning](/Machine-Learning/) and [Assessment](/Assessment/) directories. 
 
 All of these directories utilize functions from a suite of header files. For information on these header files, check out the [Headers](/Headers/) directory above.
