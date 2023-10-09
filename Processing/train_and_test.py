@@ -23,7 +23,6 @@ from analysis_header import *
 
 dir = '/Users/feef/DOI_Data/' # set the directory where the data can be found
 roughness = 28 # set what roughness data we want to look at
-channelpair = (79,72) # set the channel pair to select data from
 number_to_train_with = 10000 # set number of datapoints from EACH DOI to train the algorithim with, so 50000 yields a size of 7*50000 datapoints to train with
 number_to_test_with = 2000 # set number of datapoints from EACH DOI to test the algorithim with
 
@@ -33,12 +32,9 @@ trainingDataList = []
 testingDataList = []
 
 
-# We took data at 7 different DOIs, here we parse through the data for each DOI
+# Here we parse through the datasets for each of the 7 DOIs and sample the specifified number of datapoints for training & testing
 for depth in DOIs:
     data = getDOIDataFrame(dir+'{}um_DOI_{}mm_coinc.txt'.format(roughness,depth),DOI=depth)
-    data = data[(data.ChannelIDL == channelpair[0]) & (data.ChannelIDR == channelpair[1])]
-    training,testing = train_and_test(data,number_to_train_with,number_to_test_with)
-
     trainingDataList.append(training)
     testingDataList.append(testing)
     

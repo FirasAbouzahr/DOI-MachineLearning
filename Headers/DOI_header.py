@@ -163,7 +163,20 @@ def toGeoChannelID(x):
     x = x % 128
     y = 8 * indices.get(x)[0] + indices.get(x)[1]
     return y
+    
+    
+# the depths at which we ran our experiments at
+DOIs = [2,5,10,15,20,25,28]
 
+# channels that were coupled to rough crystals - for more context see Methods/Experimental Setup in the report
+roughChannels = np.array([[ 78,  73],
+                 [ 79,  72],
+                 [ 86,  81],
+                 [ 87,  80],
+                 [ 94,  89],
+                 [ 95,  88],
+                 [102,  97],
+                 [103,  96]])
 
 # file = /path/to/datafile
 # DOI = truth DOI from experiment
@@ -173,6 +186,7 @@ def getDOIDataFrame(file,DOI,toGeo = True):
     df = pd.read_csv(file, delimiter="\t", usecols=(2,3,4,12,13,14))
     df.columns = ["TimeL", "ChargeL", "ChannelIDL", "TimeR", "ChargeR", "ChannelIDR"]
     df["DOI"] = np.array([DOI]*np.shape(df)[0])
+    df = df[(df.ChannelIDL.isin(roughChannels[:,0])) & (df.ChannelIDR.isin(roughChannels[:,1]))] # only keep channels whose data falls into rough crystal channels
 
     if toGeo == True:
         df['ChannelIDL'] = df['ChannelIDL'].apply(toGeoChannelID)
@@ -183,8 +197,8 @@ def getDOIDataFrame(file,DOI,toGeo = True):
     
     return df
 
+# split data into training and testing and shuffle the data so we do not sample chronologically
 def train_and_test(df,trainingsize,testingsize,shuffle = True):
-    
     if shuffle == True:
         trainingData = df.sample(n=trainingsize)
         testingData = df.sample(n=testingsize)
@@ -194,17 +208,4 @@ def train_and_test(df,trainingsize,testingsize,shuffle = True):
         
     return trainingData,testingData
 
-
-# the depths at which we ran our experiments at
-DOIs = [2,5,10,15,20,25,28]
-
-# channels that were coupled to rough crystals - for more context see Methods/Experimental Setup in the report
-roughChannels = [[ 78,  73],
-                 [ 79,  72],
-                 [ 86,  81],
-                 [ 87,  80],
-                 [ 94,  89],
-                 [ 95,  88],
-                 [102,  97],
-                 [103,  96]]
 
