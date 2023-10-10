@@ -32,7 +32,7 @@ testingData = pd.read_csv(testingFile)
 
 # parse through all detector channels and fit to their photopeaks using getEnergySpectrum()
 # then use the fit parameters and specified sigma to create a reference dataframe of photopeak cuts per channel per DOI
-def getphotopeakcuts(df,sigma = 2,energy_bins = (100,0,40),save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))):
+def getphotopeakcuts(df,sigma = 2,energy_bins = (100,0,40),save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): # roughness is defined in train_and_test.py
     photopeakDict = {'ChannelID':[],'energyCut':[],'DOI':[]}
     
     for chanL in tqdm(np.unique(df.ChannelIDL)):
@@ -86,9 +86,15 @@ def energycut(df,photopeakDf,filename):
     return 0
 
 
-# lets generate our photopeak dataframe with 2 sigma photopeak cuts
-# we only need to do this for the trainingData since the testingData should use the same channel pair(s)
-photopeakdata = getphotopeakcuts(trainingData)
+# generating or reading in our photopeak cuts datasheet
+# since photopeak location is a constant per channel per DOI, if we have already ran getphotopeakcuts() in the past and saved the photopeaksheet, no need to recall the function just read-in the saved sheet.
+use_saved_photopeakdata = False
+if use_saved_photopeakdata == True:
+    photopeakdata = pd.read_csv("photopeaksheet_{}um.csv".format(roughness))
+else:
+# we only need to do this for the trainingData since the testingData uses the same channel pair(s)
+# generate our photopeak dataframe with 2 sigma (default) photopeak cuts
+    photopeakdata = getphotopeakcuts(trainingData)
     
     
 # here we call energycut() to impose energy cuts on both the training and testing data
