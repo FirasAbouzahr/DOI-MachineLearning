@@ -24,21 +24,14 @@ def linear(x,m,b):
 #def curvefit()
 
 # guessing the standard deviation helps isolate the photopeak before we fit to it
-def getEnergySpectrum(df,channelID,side,bins,std_guess = 2,photopeakcut = 1.5,display = False):
-    fig,ax = plt.subplots()
-       
-    if side == 'left':
-        df_by_chan = df[df.ChannelIDL == channelID]
-        energy = df_by_chan.ChargeL
-    
-    else:
-        df_by_chan = df[df.ChannelIDR == channelID]
-        energy = df_by_chan.ChargeR
-    
+# guessing the standard deviation helps isolate the photopeak before we fit to it
+def photopeakFit(energy,bins,std_guess = 2,photopeakcut = 2):
+
     y,x = np.histogram(energy,bins[0],(bins[1],bins[2]))
     centers = (x[:-1] + x[1:]) / 2
     
-    # this helps isolate the photopeak making it easier for the fitter to find it
+    # this helps isolate the photopeak making it easier for the fitter to find the peak
+    # Doing this is really only necessary for spectra with large compton edges, which in the case of rough crystals is true
     fitcut = centers[np.where(y == max(y))[0][0]] - std_guess
     
     energy_temp = energy[energy >= fitcut]
@@ -47,26 +40,35 @@ def getEnergySpectrum(df,channelID,side,bins,std_guess = 2,photopeakcut = 1.5,di
     y,x = np.histogram(energy_temp,bins[0],(bins[1],bins[2]))
     centers = (x[:-1] + x[1:]) / 2
     
-
+    # guess where the photopeak lies, we can do this systematically
     guess = [max(y),centers[np.where(y == max(y))[0][0]],np.std(energy_temp)]
         
     try:
         p,c = curve_fit(gaussian,centers,y,p0=guess)
-        xspace = np.linspace(p[1]-2.5*p[2],p[1]+2.5*p[2],500)
-        ax.plot(xspace,gaussian(xspace,*p),color = 'red')
-        ax.hist(energy,bins = np.linspace(bins[1],bins[2],bins[0]),color = 'C0')
         photopeak_counts = energy[(energy >= p[1] - photopeakcut*p[2]) & (energy <= p[1] + photopeakcut*p[2])]
     
     except:
         p = [-1,-1,-1]
         photopeak_counts = np.array([])
         print('Fit Failed')
-        
-    if display == False:
-        plt.close()
-        
+
     return p,photopeak_counts
 
+def getCharge(df,channelID,side,DOI):
+    if side == 'left':
+        df_by_chan = df[(df.ChannelIDL == channelID) & (df.DOI == DOI)]
+        energy = df_by_chan.ChargeL
+    else:
+        df_by_chan = df[(df.ChannelIDR == channelID) & (df.DOI == DOI)]
+        energy = df_by_chan.ChargeR
+    return energy
+
+def plotEnergySpectrum(energy,bins,figure,axis,label=''):
+    p,photopeak_counts = photopeakFit(energy,bins)
+    fit_space = np.linspace(p[1]-2.5*p[2],p[1]+2.5*p[2],500)
+    lastcolor, = axis.plot(fit_space,gaussian(fit_space,*p))
+    axis.hist(energy,bins = np.linspace(bins[1],bins[2],bins[0]),color = lastcolor.get_color(),alpha = 0.5,label=label)
+    
 # normalized count differences is a common metric used for DOI identification
 def getNCD(left_Signal,right_signal):
     NCD = (left_Signal - right_signal)/((left_Signal + right_signal))

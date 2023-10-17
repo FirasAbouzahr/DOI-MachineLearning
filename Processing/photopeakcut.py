@@ -29,13 +29,13 @@ testingData = pd.read_csv(testingFile)
 
 # parse through all detector channels and fit to their photopeaks using getEnergySpectrum()
 # then use the fit parameters and specified sigma to create a reference dataframe of photopeak cuts per channel per DOI
-def getphotopeakcuts(df,sigma=2,energy_bins = (100,0,40),save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): # roughness is defined in train_and_test.py
+def getphotopeakcuts(df,sigma=sigma,energy_bins = energy_bins,save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): 
     photopeakDict = {'ChannelID':[],'energyCutLower':[],'energyCutUpper':[],'DOI':[]}
     
     for chanL in tqdm(np.unique(df.ChannelIDL)):
         for depth in DOIs:
-            tempdf = df[df.DOI == depth]
-            p,_ = getEnergySpectrum(tempdf,chanL,'left',bins=energy_bins)
+            energy = getCharge(df,chanL,'left',depth)
+            p,_ = photopeakFit(energy,bins=energy_bins)
             photopeakDict['ChannelID'] += [chanL]
             photopeakDict['energyCutLower'] += [p[1]-sigma*p[2]]
             photopeakDict['energyCutUpper'] += [p[1]+sigma*p[2]]
@@ -43,17 +43,14 @@ def getphotopeakcuts(df,sigma=2,energy_bins = (100,0,40),save_to_file = (False,"
             
     for chanR in tqdm(np.unique(df.ChannelIDR)):
         for depth in DOIs:
-            tempdf = df[df.DOI == depth]
-            p,_ = getEnergySpectrum(tempdf,chanR,'right',bins=energy_bins)
+            energy = getCharge(df,chanR,'right',depth)
+            p,_ = photopeakFit(energy,bins=energy_bins)
             photopeakDict['ChannelID'] += [chanR]
             photopeakDict['energyCutLower'] += [p[1]-sigma*p[2]]
             photopeakDict['energyCutUpper'] += [p[1]+sigma*p[2]]
             photopeakDict['DOI'] += [depth]
 
     photopeakDf = pd.DataFrame(photopeakDict)
-    
-    if save_to_file[0] == True:
-        photopeakDf.to_csv(save_to_file[1],index = False)
     
     return photopeakDf
 

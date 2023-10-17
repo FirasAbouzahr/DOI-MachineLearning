@@ -12,13 +12,14 @@ More importantly, this allows many files to be self-sufficient.
 #######################################################################
 
 import sys
-sys.path.append('/Users/feef/DOI-ML/Headers')
-
+sys.path.append('/Users/feef/Documents/GitHub/DOI-MachineLearning/Headers')
 from DOI_header import *
 from analysis_header import *
 
+
 roughness = 28 # set what roughness data we want to look at
 sigma = 2 # number sigma we want to cut on our photpeaks for our datasets, imposed by calling photopeakcut.py
+energy_bins = (100,0,40)
 
 dir = '/Users/feef/DOI_Data/' # set the directory where the data can be found
 
