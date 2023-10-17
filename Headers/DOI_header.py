@@ -182,15 +182,15 @@ roughChannels = np.array([[ 78,  73],
 # DOI = truth DOI from experiment
 # toGeo = convert channelIDs into geometric IDs
 # train_and_test = (T/F split into training & testing ; training size ; testing size)
-def getDOIDataFrame(file,DOI,toGeo = True):
+def getDOIDataFrame(file,DOI):
     df = pd.read_csv(file, delimiter="\t", usecols=(2,3,4,12,13,14))
     df.columns = ["TimeL", "ChargeL", "ChannelIDL", "TimeR", "ChargeR", "ChannelIDR"]
     df["DOI"] = np.array([DOI]*np.shape(df)[0])
+    
+    df['ChannelIDL'] = df['ChannelIDL'].apply(toGeoChannelID)
+    df['ChannelIDR'] = df['ChannelIDR'].apply(toGeoChannelID)
+    
     df = df[(df.ChannelIDL.isin(roughChannels[:,0])) & (df.ChannelIDR.isin(roughChannels[:,1]))] # only keep channels whose data falls into rough crystal channels
-
-    if toGeo == True:
-        df['ChannelIDL'] = df['ChannelIDL'].apply(toGeoChannelID)
-        df['ChannelIDR'] = df['ChannelIDR'].apply(toGeoChannelID)
     
     # reset index now that we've dropped the uninteresting rows of data
     df.index = np.arange(0,np.shape(df)[0],1)

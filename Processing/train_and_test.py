@@ -11,19 +11,11 @@ from our Header script. We create new features for our data from raw data calcul
 #######################################################################
 #######################################################################
 
-import sys
-sys.path.append('/Users/feef/DOI-ML/Headers')
+from MasterProcessor import *
 
-
-from DOI_header import *
-from analysis_header import *
-
-
-dir = '/Users/feef/DOI_Data/' # set the directory where the data can be found
-roughness = 28 # set what roughness data we want to look at
 number_to_train_with = 10000 # set number of datapoints from EACH DOI to train the algorithim with, so 50000 yields a size of 7*50000 datapoints to train with
 number_to_test_with = 2000 # set number of datapoints from EACH DOI to test the algorithim with
-shuffle = True # choose whether we want to shuffle our data so that we don't train train on DOI in order
+shuffle = True # choose whether we want to shuffle our data so that we don't train on DOI in order
 
 
 # lists to append each DOI dataframe to
@@ -55,18 +47,12 @@ testingData["NCD"] = getNCD(testingData.ChargeL,testingData.ChargeR)
 trainingData["delta_t"] = trainingData.TimeL - trainingData.TimeR
 testingData["delta_t"] = testingData.TimeL - testingData.TimeR
 
-# although train_and_test shuffles each DOI dataset, we may also want to shuffle the data again so DOI values are not in order
+# although train_and_test shuffles each DOI dataset in time, we may also want to shuffle the data again so DOI values are not in order
 if shuffle == True:
     trainingData = trainingData.sample(n=trainingSampleSize)
     testingData = testingData.sample(n=testingSampleSize)
 
-# well need to read these files in again in other scripts so might as well make these into variables
-trainingFile = 'trainingdata_{}um_samplesize.csv'.format(roughness)
-testingFile = 'testingdata_{}um.csv'.format(roughness)
-
-
-
 trainingData.to_csv(trainingFile,index=False)
 testingData.to_csv(testingFile,index=False)
 
-print("Sample Sizes:\n","Training Set:",trainingSampleSize,"\n","Testing Set:",testingSampleSize)
+print("Original Sample Sizes:\n","Training Set:",trainingSampleSize,"\n","Testing Set:",testingSampleSize)

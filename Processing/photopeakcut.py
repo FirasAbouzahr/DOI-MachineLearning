@@ -18,13 +18,10 @@ photopeak/energy cut on our data helps our algorithim better identify DOI.
 #######################################################################
 #######################################################################
 
-import sys
-sys.path.append('/Users/feef/DOI-ML/Headers')
+from MasterProcessor import *
 
-
-from DOI_header import *
-from analysis_header import *
-from train_and_test import *
+use_saved_photopeakdata = True
+overwrite_files = False
 
 # no need to do anything but read these files since by this stage the data has already been formatted in train_and_test.py
 trainingData = pd.read_csv(trainingFile)
@@ -32,15 +29,16 @@ testingData = pd.read_csv(testingFile)
 
 # parse through all detector channels and fit to their photopeaks using getEnergySpectrum()
 # then use the fit parameters and specified sigma to create a reference dataframe of photopeak cuts per channel per DOI
-def getphotopeakcuts(df,sigma = 2,energy_bins = (100,0,40),save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): # roughness is defined in train_and_test.py
-    photopeakDict = {'ChannelID':[],'energyCut':[],'DOI':[]}
+def getphotopeakcuts(df,sigma=2,energy_bins = (100,0,40),save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): # roughness is defined in train_and_test.py
+    photopeakDict = {'ChannelID':[],'energyCutLower':[],'energyCutUpper':[],'DOI':[]}
     
     for chanL in tqdm(np.unique(df.ChannelIDL)):
         for depth in DOIs:
             tempdf = df[df.DOI == depth]
             p,_ = getEnergySpectrum(tempdf,chanL,'left',bins=energy_bins)
             photopeakDict['ChannelID'] += [chanL]
-            photopeakDict['energyCut'] += [[p[1]-sigma*p[2],p[1]+sigma*p[2]]]
+            photopeakDict['energyCutLower'] += [p[1]-sigma*p[2]]
+            photopeakDict['energyCutUpper'] += [p[1]+sigma*p[2]]
             photopeakDict['DOI'] += [depth]
             
     for chanR in tqdm(np.unique(df.ChannelIDR)):
@@ -48,7 +46,8 @@ def getphotopeakcuts(df,sigma = 2,energy_bins = (100,0,40),save_to_file = (False
             tempdf = df[df.DOI == depth]
             p,_ = getEnergySpectrum(tempdf,chanR,'right',bins=energy_bins)
             photopeakDict['ChannelID'] += [chanR]
-            photopeakDict['energyCut'] += [[p[1]-sigma*p[2],p[1]+sigma*p[2]]]
+            photopeakDict['energyCutLower'] += [p[1]-sigma*p[2]]
+            photopeakDict['energyCutUpper'] += [p[1]+sigma*p[2]]
             photopeakDict['DOI'] += [depth]
 
     photopeakDf = pd.DataFrame(photopeakDict)
@@ -58,7 +57,7 @@ def getphotopeakcuts(df,sigma = 2,energy_bins = (100,0,40),save_to_file = (False
     
     return photopeakDf
 
-# using a photopeakcut datasheet, we drop data do not fall within some specified number of standard deviations aways from the photopeak center
+# using a photopeakcut look-up-table (LUT) that we generated using getphotopeakcuts(), we drop data that do not fall within some specified number of standard deviations aways from the photopeak center
 def energycut(df,photopeakDf,filename):
     
     dfarray = df.to_numpy()
@@ -69,35 +68,36 @@ def energycut(df,photopeakDf,filename):
         row = dfarray[rownum]
         
         # get the energy cut for each channel at the given DOI
-        ch1_cut = photopeakDf[(photopeakDf.ChannelID == row[2]) & (photopeakDf.DOI == row[6])].energyCut.iloc[0]
-        ch1_lower_limit,ch1_upper_limit = ch1_cut[0],ch1_cut[1]
-        ch2_cut = photopeakDf[(photopeakDf.ChannelID == row[5]) & (photopeakDf.DOI == row[6])].energyCut.iloc[0]
-        ch2_lower_limit,ch2_upper_limit = ch2_cut[0],ch2_cut[1]
-        
+        ch1_lower_limit = photopeakDf[(photopeakDf.ChannelID == row[2]) & (photopeakDf.DOI == row[6])].energyCutLower.iloc[0]
+        ch1_upper_limit = photopeakDf[(photopeakDf.ChannelID == row[2]) & (photopeakDf.DOI == row[6])].energyCutUpper.iloc[0]
+
+        ch2_lower_limit = photopeakDf[(photopeakDf.ChannelID == row[5]) & (photopeakDf.DOI == row[6])].energyCutLower.iloc[0]
+        ch2_upper_limit = photopeakDf[(photopeakDf.ChannelID == row[5]) & (photopeakDf.DOI == row[6])].energyCutUpper.iloc[0]
         energy1,energy2 = row[1],row[4]
         
         # only keep LORs whose energy values fall within the specified standard deviation of the photopeak mean
         if energy1>=ch1_lower_limit and energy1 <=ch1_upper_limit and energy2>=ch2_lower_limit and energy2 <=ch2_upper_limit:
                 energyCutDf.loc[index] = row
                 index += 1
-        
+    
     energyCutDf.to_csv(filename,index = False)
     
-    return 0
+    return np.shape(energyCutDf)[0] # no need to return the frame, we just need it to save it to a file for later use
 
+# generating or reading in an already saved photopeakcut LUT for the given roughness
+try:
+    print("Reading-in the {} µm,{}σ photopeak LUT".format(roughness,sigma))
+    photopeakdata = pd.read_csv(photopeakLUTFile)
+except:
+    print("A photopeak LUT has yet to generated for {} µm data with a {}σ cut. \n Generating and saving the {} µm,{}σ LUT:".format(roughness,sigma,roughness,sigma))
+    photopeakdata = getphotopeakcuts(trainingData,sigma,save_to_file = (True,photopeakLUTFile))
 
-# generating or reading in our photopeak cuts datasheet
-# since photopeak location is a constant per channel per DOI, if we have already ran getphotopeakcuts() in the past and saved the photopeaksheet, no need to recall the function just read-in the saved sheet.
-use_saved_photopeakdata = False
-if use_saved_photopeakdata == True:
-    photopeakdata = pd.read_csv("photopeaksheet_{}um.csv".format(roughness))
-else:
-# we only need to do this for the trainingData since the testingData uses the same channel pair(s)
-# generate our photopeak dataframe with 2 sigma (default) photopeak cuts
-    photopeakdata = getphotopeakcuts(trainingData)
-    
-    
 # here we call energycut() to impose energy cuts on both the training and testing data
+if overwrite_files == True:
+    newTrainingSize = energycut(trainingData,photopeakdata,trainingFile)
+    newTestingSize = energycut(testingData,photopeakdata,testingFile)
+else:
+    newTrainingSize = energycut(trainingData,photopeakdata,energycut_trainingFile)
+    newTestingSize = energycut(testingData,photopeakdata,energycut_testingFile)
 
-trainingData_with_energycut = energycut(trainingData,photopeakdata,'trainingdata_{}um_channelpair{}-{}_energycut.csv'.format(roughness,channelpair[0],channelpair[1]))
-testingData_with_energycut = energycut(testingData,photopeakdata,'testingdata_{}um_channelpair{}-{}_energycut.csv'.format(roughness,channelpair[0],channelpair[1]))
+print("Sample Sizes after the {}σ cut:\n".format(sigma),"Training Set:",newTrainingSize,"\n","Testing Set:",newTestingSize)
