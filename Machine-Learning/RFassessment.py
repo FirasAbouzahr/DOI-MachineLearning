@@ -73,6 +73,7 @@ def ConfusionMatrix(predict,testingData,normalize_per_category = True,title = ""
     plt.ylabel('Truth DOI',fontsize = 18)
     plt.xlabel('Predicted DOI',fontsize = 18)
     plt.title(title,fontsize = 18)
+    plt.show()
 
     return matrix
 
