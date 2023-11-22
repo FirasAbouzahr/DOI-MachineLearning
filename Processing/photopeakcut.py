@@ -29,7 +29,7 @@ testingData = pd.read_csv(testingFile)
 
 # parse through all detector channels and fit to their photopeaks using getEnergySpectrum()
 # then use the fit parameters and specified sigma to create a reference dataframe of photopeak cuts per channel per DOI
-def getphotopeakcuts(df,sigma=sigma,energy_bins = energy_bins,save_to_file = (False,"photopeaksheet_{}um.csv".format(roughness))): 
+def getphotopeakcuts(df,sigma=sigma,energy_bins = energy_bins):
     photopeakDict = {'ChannelID':[],'energyCutLower':[],'energyCutUpper':[],'DOI':[]}
     
     for chanL in tqdm(np.unique(df.ChannelIDL)):
@@ -83,13 +83,16 @@ def energycut(df,photopeakDf,filename):
 
 # generating or reading in an already saved photopeakcut LUT for the given roughness
 try:
-    print("Reading-in the {} µm,{}σ photopeak LUT".format(roughness,sigma))
+    print("\nTrying to read-in the {} µm,{}σ photopeak LUT...".format(roughness,sigma))
     photopeakdata = pd.read_csv(photopeakLUTFile)
+    print("LUT found!")
 except:
-    print("A photopeak LUT has yet to generated for {} µm data with a {}σ cut. \n Generating and saving the {} µm,{}σ LUT:".format(roughness,sigma,roughness,sigma))
-    photopeakdata = getphotopeakcuts(trainingData,sigma,save_to_file = (True,photopeakLUTFile))
+    print("\nA photopeak LUT has yet to generated for {} µm data with a {}σ cut. \nGenerating and saving the {} µm,{}σ LUT:".format(roughness,sigma,roughness,sigma))
+    photopeakdata = getphotopeakcuts(trainingData,sigma)
+    photopeakdata.to_csv(photopeakLUTFile,index = False)
 
 # here we call energycut() to impose energy cuts on both the training and testing data
+print("\Imposing {} photopeak cut on training and testing datasets... this may take a few minutes!".format(sigma))
 if overwrite_files == True:
     newTrainingSize = energycut(trainingData,photopeakdata,trainingFile)
     newTestingSize = energycut(testingData,photopeakdata,testingFile)

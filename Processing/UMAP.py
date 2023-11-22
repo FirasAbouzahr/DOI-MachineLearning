@@ -20,7 +20,7 @@ trainingData = pd.read_csv(energycut_trainingFile)
 testingData = pd.read_csv(energycut_testingFile)
 
 features = ["NCD","ChargeR","ChargeL","ChannelIDL","ChannelIDR"] # choose which features we want to UMAP project
-output = ['DOI']
+output = ["DOI"]
 
 xTrain = trainingData[features]
 yTrain = trainingData[output]

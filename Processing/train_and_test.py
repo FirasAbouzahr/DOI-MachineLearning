@@ -13,8 +13,8 @@ from our Header script. We create new features for our data from raw data calcul
 
 from MasterProcessor import *
 
-number_to_train_with = 10000 # set number of datapoints from EACH DOI to train the algorithim with, so 50000 yields a size of 7*50000 datapoints to train with
-number_to_test_with = 2000 # set number of datapoints from EACH DOI to test the algorithim with
+number_to_train_with = 50000 # set number of datapoints from EACH DOI to train the algorithim with, so 50000 yields a size of 7*50000 datapoints to train with
+number_to_test_with = 20000 # set number of datapoints from EACH DOI to test the algorithim with
 shuffle = True # choose whether we want to shuffle our data so that we don't train on DOI in order
 
 
@@ -46,6 +46,10 @@ trainingData["NCD"] = getNCD(trainingData.ChargeL,trainingData.ChargeR)
 testingData["NCD"] = getNCD(testingData.ChargeL,testingData.ChargeR)
 trainingData["delta_t"] = trainingData.TimeL - trainingData.TimeR
 testingData["delta_t"] = testingData.TimeL - testingData.TimeR
+
+# we found that shifting shifting delta_t to be centered on 0 is useful!
+trainingData["delta_t"]  = trainingData["delta_t"] - np.mean(trainingData["delta_t"])
+testingData["delta_t"]  = testingData["delta_t"] - np.mean(testingData["delta_t"])
 
 # although train_and_test shuffles each DOI dataset in time, we may also want to shuffle the data again so DOI values are not in order
 if shuffle == True:

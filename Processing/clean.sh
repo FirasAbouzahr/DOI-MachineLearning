@@ -7,4 +7,5 @@
 #  
 
 
-rm -r *.csv
+rm -r testingdata*
+rm -r trainingdata*
