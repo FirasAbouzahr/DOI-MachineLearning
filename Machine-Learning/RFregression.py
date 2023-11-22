@@ -44,15 +44,19 @@ evaluation = model_regression.evaluate(kerasTestingFrame_Regression, return_dict
 
 print(evaluation)
 print()
-print(f"MSE: {evaluation['mse']}")
-print(f"RMSE: {np.sqrt(evaluation['mse'])}")
+MSE = evaluation['mse']
+RMSE = np.sqrt(evaluation['mse'])
+print("MSE: {}".format(MSE))
+print("RMSE: {}".format(RMSE))
 
 ### TESTING ###
 print("\nTesting our model:")
 prediction = model_regression.predict(kerasTestingFrame_Regression)
 
 # saving our results to a dataframe to optionally be readout
-resultFrame = pd.DataFrame(columns = ["Truth","Predicted"])
+resultFrame = pd.DataFrame(columns = ["ChannelIDL","ChannelIDR","Truth","Predicted"])
+resultFrame["ChannelIDL"] = testingData.ChannelIDL
+resultFrame["ChannelIDR"] = testingData.ChannelIDR
 resultFrame["Truth"] = testingData.DOI
 resultFrame["Predicted"] = prediction
 

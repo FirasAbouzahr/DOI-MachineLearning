@@ -34,5 +34,5 @@ regressionFile = "regressionResults_{}um.csv".format(roughness)
 
 # set custom features to train with
 # MUST INCLUDE DOI
-features = ['ChannelIDL','ChannelIDR','NCD','delta_t','ChargeR','ChargeL','DOI']
+features = ["NCD","ChargeR","ChargeL","ChargeR_zscore","ChargeL_zscore","delta_t","ChannelIDL","ChannelIDR",'DOI']
 
