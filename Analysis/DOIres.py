@@ -24,7 +24,7 @@ NCDfwhms = np.array([NCDinfo[odds] for odds in range(len(NCDinfo)) if odds%2 != 
 
 fig,ax = plt.subplots()
 ax.scatter(NCDpeaks,DOIs)
-ax.errorbar(NCDpeaks,DOIs,xerr = NCDfwhms/2,fmt = "none")
+ax.errorbar(NCDpeaks,DOIs,xerr = NCDfwhms/4,fmt = "none")
 p,c = curve_fit(linear,NCDpeaks,DOIs)
 x = np.linspace(min(NCDpeaks)-.01,max(NCDpeaks)+.01,100)
 ax.plot(x,linear(x,*p),linestyle = "dashed",label = "Linear Fit")
@@ -35,8 +35,8 @@ if example_calculation == True:
     exampleMean = LUT["{}mm".format(at_DOI)].iloc[0]
     exampleFWHM = LUT["{}mm_FWHM".format(at_DOI)].iloc[0]
     
-    xmin = exampleMean - exampleFWHM/2
-    xmax = exampleMean + exampleFWHM/2
+    xmin = exampleMean - exampleFWHM/4
+    xmax = exampleMean + exampleFWHM/4
     
     ymin = linear(xmin,p[0],p[1])
     ymax = linear(xmax,p[0],p[1])
@@ -47,7 +47,12 @@ if example_calculation == True:
     ax.vlines(xmax,at_DOI,ymax,color = 'red')
     ax.hlines(ymin,lims[0],xmin,color = 'red')
     ax.hlines(ymax,lims[0],xmax,color = 'red',label = 'Resolution Estimation')
-    ax.text(xmax+abs(xmax/10),at_DOI,"Resolution at {} mm is {} mm".format(at_DOI,np.round(res,2)))
+    ax.text(-.25,at_DOI+.3,"Resolution at {} mm is {} mm".format(at_DOI,np.round(res,2)),color='red')
+    
+    plt.yticks(fontsize = 13)
+    plt.xticks(fontsize = 13)
+    plt.xlabel("Mean NCD",fontsize = 17)
+    plt.ylabel("DOI [mm]",fontsize = 17)
 
 
 ax.set_xlim(lims[0],lims[1])
