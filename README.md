@@ -531,7 +531,7 @@ print(np.shape(trainingData),np.shape(testingData))
 
     (90506, 7) (35815, 7)
 
-
+## add the canonical features like NCD and time difference to our training and testing DataFrames
 
 ```python
 trainingData['NCD'] = ((trainingData.ChargeL - trainingData.ChargeR)/(trainingData.ChargeR + trainingData.ChargeL))
@@ -542,6 +542,8 @@ testingData['delta_t'] = (testingData.TimeL - testingData.TimeR)
 testingData['delta_t'] = testingData['delta_t'] - np.mean(testingData['delta_t'])
 ```
 
+## UMAP tranformation into 3-dimensional phase space with the Chebyshev distance
+- then added into our DataFrames as new features
 
 ```python
 x = ['NCD','ChargeR','ChargeL',"ChannelIDL","ChannelIDR"]
@@ -618,7 +620,6 @@ testEmbeddings = staticReduction.transform(xTest)
     
 
 
-
 ```python
 trainingData['n1'] = n1
 trainingData['n2'] = n2
@@ -662,6 +663,7 @@ testingData['ChargeL_zscore'] = np.array(leftNorms)
 testingData['ChargeR_zscore'] = np.array(rightNorms)
 ```
 
+## Shuffle our data to be robust!
 
 ```python
 # shuffle our datasets
@@ -670,6 +672,8 @@ trainingData = trainingData.sample(n=np.shape(trainingData)[0])
 testingData = testingData.sample(n=np.shape(testingData)[0])
 ```
 
+## Define our keras DataFrames
+- easier to use the keras frames than pandas with TensorFlow
 
 ```python
 features = ['ChannelIDL','ChannelIDR','NCD','delta_t','ChargeR','ChargeL',"ChargeR_zscore","ChargeL_zscore",'DOI']
@@ -678,6 +682,7 @@ kerasTrainingFrame = tfdf.keras.pd_dataframe_to_tf_dataset(trainingData[features
 kerasPredictionFrame = tfdf.keras.pd_dataframe_to_tf_dataset(testingData[features], label="DOI")
 ```
 
+# Grow our random forest model!
 
 ```python
 model = tfdf.keras.RandomForestModel(verbose=2,max_depth = 20)
@@ -943,7 +948,7 @@ model.fit(kerasTrainingFrame,label='DOI')
     <keras.src.callbacks.History at 0x30d9591f0>
 
 
-
+## Evaluate the categorical model!
 
 ```python
 compilation = model.compile(metrics=["Accuracy"])
@@ -952,7 +957,7 @@ evaluation = model.evaluate(kerasPredictionFrame,return_dict=True)
 
     36/36 [==============================] - 3s 78ms/step - loss: 0.0000e+00 - Accuracy: 0.8500
 
-
+## Calculate feature importances
 
 ```python
 # plot inverse mean minimum 
@@ -993,7 +998,7 @@ plt.yticks(fontsize = 15)
 ![png](Figures/output_25_1.png)
     
 
-
+## Use our model to predict DOI for our training data
 
 ```python
 # let's actually test our model
@@ -1094,7 +1099,7 @@ features = ["NCD","ChargeR","ChargeL","ChargeR_zscore","ChargeL_zscore","delta_t
 kerasTrainingFrame_Regression = tfdf.keras.pd_dataframe_to_tf_dataset(trainingData[features], label="DOI",task=tfdf.keras.Task.REGRESSION)
 kerasTestingFrame_Regression = tfdf.keras.pd_dataframe_to_tf_dataset(testingData[features], label="DOI",task=tfdf.keras.Task.REGRESSION)
 ```
-
+## Grow our model
 
 ```python
 model_regression = tfdf.keras.RandomForestModel(task = tfdf.keras.Task.REGRESSION,max_depth = 20)
@@ -1123,7 +1128,7 @@ model_regression.fit(kerasTrainingFrame_Regression)
 
     <keras.src.callbacks.History at 0x30da28f10>
 
-
+## Evaluate our model
 
 
 ```python
@@ -1142,7 +1147,7 @@ print("RMSE: {}".format(np.sqrt(evaluation['mse'])))
     MSE: 1.9778531789779663
     RMSE: 1.4063616814240802
 
-
+## Feature importance
 
 ```python
 # plot inverse mean minimum 
@@ -1181,7 +1186,7 @@ plt.yticks(fontsize = 15)
     
 ![png](Figures/output_33_1.png)
     
-
+## test our model with the testing data...
 
 
 ```python
@@ -1190,7 +1195,7 @@ prediction = model_regression.predict(kerasTestingFrame_Regression)
 
     36/36 [==============================] - 1s 40ms/step
 
-
+## Plot the prediction distributions
 
 ```python
 fig,ax = plt.subplots(figsize = (10,7))
@@ -1221,7 +1226,7 @@ plt.xlim(0,30)
 ![png](Figures/output_35_1.png)
     
 
-
+## Define a new dataframe to compute resolution with
 
 ```python
 resultFrame = pd.DataFrame(columns = ["ChannelIDL","ChannelIDR","Truth","Predicted"])
@@ -1231,6 +1236,7 @@ resultFrame["Truth"] = testingData.DOI
 resultFrame["Predicted"] = prediction
 ```
 
+## Finally, compute DOI resolution and the efficiency
 
 ```python
 N = np.shape(trainingData)[0]
