@@ -14,10 +14,6 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
-
-# the data of interest was collected in these detector channels
-DOIchannels = [72, 73, 80, 81, 88, 89, 96, 97]
-
 #converts PETSys ID to geometric ID ; the d
 def toGeo(x):
     y = 8*indices.get(x)[0] + indices.get(x)[1]
@@ -201,7 +197,9 @@ def getDOIDataFrame(file,DOI):
 def train_and_test(df,trainingsize,testingsize,shuffle = True):
     if shuffle == True:
         trainingData = df.sample(n=trainingsize)
-        testingData = df.sample(n=testingsize)
+        trainingIndices = np.where(df.index.isin(trainingData.index))[0]
+        tempframe = df[~df.index.isin(trainingIndices)] # ensure we do not resample testing data from the same data used for training!
+        testingData = tempframe.sample(n=testingsize)
     else:
         trainingData = df[df.index <= trainingsize]
         testingData = df[(df.index >= trainingsize) & (df.index <= testingsize)]

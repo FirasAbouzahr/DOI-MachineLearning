@@ -33,7 +33,7 @@ except:
 
 ### TRAINING ###
 print("Training the model:")
-model = tfdf.keras.RandomForestModel(verbose=2) # set parameters here
+model = tfdf.keras.RandomForestModel(max_depth = 20,verbose=2) # set parameters here
 model.fit(kerasTrainingFrame,label='DOI')
 
 ### EVALUATING ###

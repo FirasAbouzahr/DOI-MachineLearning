@@ -21,6 +21,16 @@ def gaussian(x,A,mu,sig):
 def linear(x,m,b):
     return m * x + b
     
+    
+def getCharge(df,channelID,side,DOI):
+    if side == 'left':
+        df_by_chan = df[(df.ChannelIDL == channelID) & (df.DOI == DOI)]
+        energy = df_by_chan.ChargeL
+    else:
+        df_by_chan = df[(df.ChannelIDR == channelID) & (df.DOI == DOI)]
+        energy = df_by_chan.ChargeR
+    return energy
+    
 
 # guessing the standard deviation helps isolate the photopeak before we fit to it, this is mostly necessary for noisy data
 '''can double as a general gaussian fitter, just set std_guess = None'''
@@ -57,14 +67,6 @@ def photopeakFit(energy,bins,std_guess = 2,photopeakcut = 2):
 
     return p,photopeak_counts
 
-def getCharge(df,channelID,side,DOI):
-    if side == 'left':
-        df_by_chan = df[(df.ChannelIDL == channelID) & (df.DOI == DOI)]
-        energy = df_by_chan.ChargeL
-    else:
-        df_by_chan = df[(df.ChannelIDR == channelID) & (df.DOI == DOI)]
-        energy = df_by_chan.ChargeR
-    return energy
 
 def plotEnergySpectrum(energy,bins,figure,axis,label='',return_fit = False):
     p,photopeak_counts = photopeakFit(energy,bins)

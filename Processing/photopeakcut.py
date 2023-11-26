@@ -20,7 +20,6 @@ photopeak/energy cut on our data helps our algorithim better identify DOI.
 
 from MasterProcessor import *
 
-use_saved_photopeakdata = True
 overwrite_files = False
 
 # no need to do anything but read these files since by this stage the data has already been formatted in train_and_test.py
@@ -92,7 +91,7 @@ except:
     photopeakdata.to_csv(photopeakLUTFile,index = False)
 
 # here we call energycut() to impose energy cuts on both the training and testing data
-print("\Imposing {} photopeak cut on training and testing datasets... this may take a few minutes!".format(sigma))
+print("\nImposing a {}σ photopeak cut on training and testing datasets... this may take a few minutes!".format(sigma))
 if overwrite_files == True:
     newTrainingSize = energycut(trainingData,photopeakdata,trainingFile)
     newTestingSize = energycut(testingData,photopeakdata,testingFile)
