@@ -8,18 +8,9 @@ occurred. The importance of high-resolution image reconstruction calls for effec
 certain experimental quantites change as a function of depth allowing us to sometimes distinguish between different DOIs and correct parallax error. Results from the analysis have already shown that DOI resolution, a measure of how well our detectors and corresponding analysis can identify DOI, is a function of crystal surface roguhness (more on this later)! In order to optimize the ability and rapidity of 
 identifying DOI, we employ machine learning.
 
-This readme document will:
-1. Walk through the basic statistical analysis we can conduct on experimental observables to distinguish DOIs and the general results as well as how to reproduce these results using the python scripts in the [Analysis](/Analysis/) directory. 
-2. Illustrate different pre-processing, data transformations, and more that we conduct on our datasets before training an algorithim to identify DOI with the [Processing](/Processing/) directory.
-3. Show how we can begin training algorithims on processed datasets, assess the performance of an algorithim, the importance of various features, and more. Here we will use the [Machine-learning](/Machine-Learning/) and [Assessment](/Assessment/) directories. 
+The python scripts in the DOI-MachineLearning repository have some differences from this notebook DOI-MachineLearning.ipynb. However, the python scripts are all adapted directly from this notebook and achieve the same results. For instance, the python scripts have additional functions to help streamline the pipeline when running from bash... To see a run down of the bash pipeline see the section Pipeline Appendix in the report.
 
-All of these directories utilize functions from a suite of header files. For information on these header files, check out the [Headers](/Headers/) directory above.
-
-Lets go through the pipeline of the notebook:
-
-The python scripts in the DOI-MachineLearning have some differences from this notebook. However, the python scripts are all adapted directly from this notebook and achieve the same results.
-
-For instance, the python scripts have additional functions to help streamline the pipeline when running from bash... To see a run down of the bash pipeline see the section Pipeline Appendix in the report.
+Let's go through the notebook:
 
 
 ```python
@@ -1305,11 +1296,11 @@ if print_averages == True:
 ```
 
     
-    Average Resolution at 5 mm DOI: 1.635 mm with 85.5% effciency
-    Average Resolution at 10 mm DOI: 0.455 mm with 73.5% effciency
-    Average Resolution at 15 mm DOI: 2.717 mm with 67.4% effciency
-    Average Resolution at 20 mm DOI: 0.525 mm with 68.89999999999999% effciency
-    Average Resolution at 25 mm DOI: 0.511 mm with 69.19999999999999% effciency
+Average Resolution at 5 mm DOI: 1.83 mm with 88.7% effciency
+Average Resolution at 10 mm DOI: 0.476 mm with 73.4% effciency
+Average Resolution at 15 mm DOI: 1.554 mm with 63.3% effciency
+Average Resolution at 20 mm DOI: 0.557 mm with 70.0% effciency
+Average Resolution at 25 mm DOI: 0.467 mm with 67.7% effciency
 
 
 
