@@ -1296,11 +1296,11 @@ if print_averages == True:
 ```
 
     
-Average Resolution at 5 mm DOI: 1.83 mm with 88.7% effciency
-Average Resolution at 10 mm DOI: 0.476 mm with 73.4% effciency
-Average Resolution at 15 mm DOI: 1.554 mm with 63.3% effciency
-Average Resolution at 20 mm DOI: 0.557 mm with 70.0% effciency
-Average Resolution at 25 mm DOI: 0.467 mm with 67.7% effciency
+Average Resolution at 5 mm DOI: 1.83 mm with 88.7% effciency <br />
+Average Resolution at 10 mm DOI: 0.476 mm with 73.4% effciency <br />
+Average Resolution at 15 mm DOI: 1.554 mm with 63.3% effciency <br />
+Average Resolution at 20 mm DOI: 0.557 mm with 70.0% effciency <br />
+Average Resolution at 25 mm DOI: 0.467 mm with 67.7% effciency <br />
 
 
 
