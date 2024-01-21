@@ -99,8 +99,7 @@ Index(['TimeL', 'ChargeL', 'ChannelIDL', 'TimeR', 'ChargeR', 'ChannelIDR',
 
  
 
-Now, let's run UMAP.py. UMAP.py starts by allowing us to choose which features we want to cluster with UMAP, which by default is set to what was used in our report (and found to yield the best result): charge, NCD, and channelID. Then it actually calls upon umap.UMAP() given by the UMAP package with a few preset parameters: metric=``chebyshev`` and n\_components = 3, again the same parameters our studies illustrated to yield the best results (see Section \ref{sec:UMAP}) \cite{UMAP}. UMAP.py also gives one the option to plot the clustering with the boolean variable, show\_projection. 
-
+Now, let's run UMAP.py. UMAP.py starts by allowing us to choose which features we want to cluster with UMAP, which by default is set to what was used in our report (and found to yield the best result): charge, NCD, and channelID. Then it actually calls upon umap.UMAP() given by the UMAP package with a few preset parameters: metric=``chebyshev`` and n\_components = 3, again the same parameters our studies illustrated to yield the best results (see Section UMAP in my thesis above). UMAP.py also gives one the option to plot the clustering with the boolean variable, show\_projection.
  
 
 ```
@@ -133,9 +132,11 @@ Epochs completed: 100%|====================================================|30/3
 
  
 
-The text shown above are all a result of having verbose=True in umap.UMAP(). With show\_projection = True, we also see a resultant clustering plot similar to the left panel of Figure \ref{fig:UMAP}. Now after runnning UMAP.py, we have new transformed columns in our datasets: 
+The text shown above are all a result of having verbose=True in umap.UMAP(). With show\_projection = True, we also see a resultant clustering plot similar to the one shown below.
 
- 
+![png](Figures/output_17_4.png)
+
+Now after runnning UMAP.py, we have new transformed columns in our datasets: 
 
 ```
 Processing Firas$ python3
