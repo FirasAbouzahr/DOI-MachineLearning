@@ -181,7 +181,7 @@ Index(['TimeL', 'ChargeL', 'ChannelIDL', 'TimeR', 'ChargeR', 'ChannelIDR',
 
  
 
-*Machine Learning Pipeline
+# Machine Learning Pipeline
 Once, we have ran the required scripts in the Processing directory and, if desired, the two optional scripts, we can move onto machine learning! Since our machine learning is still at the research stage, the learning pipeline is set to train and test in the same scripts. Work is currently being done to streamline this directory such that saved random forest models can be applied to new datasets. For now the repository contains five main scripts. As with the Processing directory, this file has a ``Master`` file that only contains variables that will be reused throughout the ML pipeline such as the features we wish to implement into our models. Next, we have RFassessment.py, which contains functions to assess how our classification and regression random forest models are performing. This includes functions to plot the confusion matrix, prediction distributions, and feature importance calculations. RFassessment.py is not called on its own but rather is imported into our actual machine learning scripts: RFclassification and RFregression.py which both give options to show assessment plots after testing. RFclassification and RFregression.py actually train and test random forest models using the data files generated in the Processing directory with the features defined in MasterLearning.py. The last script, DOI-resolution.py, uses the results saved from RFregression.py to fit Gaussians to the truth minus predicted distributions and then extract DOI resolutions. Let's start with RFclassification. In MasterLearning.py we have set:
 
  
