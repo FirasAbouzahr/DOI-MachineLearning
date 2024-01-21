@@ -13,32 +13,32 @@ The data processing pipeline includes five python scripts. MasterProcessor.py, i
 
 Before we call train\_and\_test.py, there are no data files in the Processing directory:
 
-'''
+```
 Processing Firas$ ls
 MasterProcessor.py        clean.sh            readme.md
 UMAP.py                 train_and_test.py      __init__.py            
 photopeakcut.py            z_transform.py
-'''
+```
 
 Now, setting the three variables at the beginning of the script to number\_to\_train\_with = 50000, number\_to\_test\_with = 20000, and shuffle = True and calling train\_and\_test.py:
 
-'''
+```
 Processing Firas$ python3 train_and_test.py
 Original Sample Sizes:
  Training Set: 350000 
  Testing Set: 140000
-'''
+```
 
 The script prints out the sample sizes of the training and testing datasets produced for reference. Now, in the directory we have two files, one for training (trainingdata\_28um.csv) and one for testing (testingdata\_28um.csv) our random forest: 
 
-'''
+```
 Processing Firas$ ls
 MasterProcessor.py    train_and_test.py    UMAP.py                
 photopeakcut.py        trainingdata_28um.csv
 __init__.py            readme.md            z_transform.py
 clean.sh            testingdata_28um.csv
 Firass-MacBook-Pro:Processing Firas$ 
-'''
+```
 
  
 
@@ -46,13 +46,13 @@ train\_and\_test.py also added two new columns to these data files not present i
 
  
 
-'''
+```
 Processing Firas$ ls
 MasterProcessor.py    train_and_test.py    UMAP.py                
 photopeakcut.py        trainingdata_28um.csv
 __init__.py            readme.md            z_transform.py
 clean.sh            testingdata_28um.csv
-'''
+```
 
  
 
@@ -60,7 +60,7 @@ I've included a couple nice features to make this as streamline as possible. Not
 
  
 
-'''
+```
 Processing Firas$ python3 photopeakcut.py
 
 Trying to read-in the 28 um,2sig photopeak LUT...
@@ -76,7 +76,7 @@ Imposing a 2sig photopeak cut on training and testing datasets... this may take 
 Sample Sizes after the 2sig cut:
  Training Set: 93171 
  Testing Set: 37319
-'''
+```
 
  
 
@@ -84,7 +84,7 @@ The tqdm loading bars couldn't be rendered in \LaTeX \: so I've replaced them wi
 
  
 
-'''
+```
 Processing Firas$ python3
 Python 3.9.6 (default, May  7 2023, 23:32:44) 
 [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
@@ -95,7 +95,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 Index(['TimeL', 'ChargeL', 'ChannelIDL', 'TimeR', 'ChargeR', 'ChannelIDR',
        'DOI', 'NCD', 'delta_t'],
       dtype='object')
-'''
+```
 
  
 
@@ -103,7 +103,7 @@ Now, let's run UMAP.py. UMAP.py starts by allowing us to choose which features w
 
  
 
-'''
+```
 Processing Firas$ python3 UMAP.py
 Fitting our data to
 UMAP(n_components=3, output_metric='chebyshev', random_state=42, verbose=True)
@@ -129,7 +129,7 @@ Sun Nov 26 10:04:58 2023 Degree pruning reduced edges from 327222 to 327222
 Sun Nov 26 10:04:58 2023 Resorting data and graph based on tree order
 Sun Nov 26 10:04:58 2023 Building and compiling search function
 Epochs completed: 100%|====================================================|30/30 [00:02]
-'''
+```
 
  
 
@@ -137,7 +137,7 @@ The text shown above are all a result of having verbose=True in umap.UMAP(). Wit
 
  
 
-'''
+```
 Processing Firas$ python3
 Python 3.9.6 (default, May  7 2023, 23:32:44) 
 [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
@@ -148,16 +148,16 @@ Type "help", "copyright", "credits" or "license" for more information.
 Index(['TimeL', 'ChargeL', 'ChannelIDL', 'TimeR', 'ChargeR', 'ChannelIDR',
        'DOI', 'NCD', 'delta_t', 'n1', 'n2', 'n3'],
       dtype='object')
-'''
+```
 
  
 
 The n1, n2, n2 represent our new phase space variables from the projection. We can also use z\_transform.py to carry out a z-score transformation of our data. Using the function ztransform(), which itself calls upon scipy.stats.zscore, we can z-score transform any column of data we want from a pandas DataFrame \cite{pandas,SCIPY}. The script by default carries out this transform only on charge as this was proven to yield promising results. 
 
-'''
+```
 Processing Firas$ python3 z_transform.py
 Saving z-transformed data to files: trainingdata_28um_2σ_cut.csv & testingdata_28um_2σ_cut.csv
-'''
+```
 
  
 
@@ -165,7 +165,7 @@ And again, these transformed features are added to the energy-cut data files:
 
  
 
-'''
+```
 Processing Firas$ python3
 Python 3.9.6 (default, May  7 2023, 23:32:44) 
 [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
@@ -177,7 +177,7 @@ Index(['TimeL', 'ChargeL', 'ChannelIDL', 'TimeR', 'ChargeR', 'ChannelIDR',
        'DOI', 'NCD', 'delta_t', 'n1', 'n2', 'n3', 'ChargeL_zscore',
        'ChargeR_zscore'],
       dtype='object')
-'''
+```
 
  
 
@@ -188,7 +188,7 @@ Once, we have ran the required scripts in the Processing directory and, if desir
 
 ```python
 features = ["NCD","ChargeR","ChargeL","ChargeR_zscore","ChargeL_zscore","delta_t","ChannelIDL","ChannelIDR",'DOI']
-'''
+```
 
  
 
@@ -196,7 +196,7 @@ RFclassification.py first calls tfdf.keras.pd\_dataframe\_to\_tf\_dataset() to c
 
  
 
-'''
+```
 Machine-Learning Firas$ python3 RFclassification.py
 Training the model:
 
@@ -218,7 +218,7 @@ Accuracy for 20 mm DOI: 0.85
 Accuracy for 25 mm DOI: 0.87
 Accuracy for 28 mm DOI: 0.96
 Total Accuracy:  0.824
-'''
+```
 
  
 
@@ -226,7 +226,7 @@ RFclassification has two boolean variables defined: feature\_importance and conf
 
  
 
-'''
+```
 Machine-Learning Firas$ python3 RFregression.py
 Training the model:
 
@@ -245,14 +245,14 @@ Testing our model:
 38/38 [==============================] - 2s 47ms/step
 
 Saving regression results to file: regressionResults_28um.csv
-'''
+```
 
 
 As with RFclassification, RFregression also has two boolean variables we can set equal to True to help visualize the performance of our model. The first is feature\_importance, which serves the same purpose as in classification. The second is prediction\_spectra, which when set to True, will display a plot like in the right panels of Figures \ref{fig:DOI-Confusion-noCut} and \ref{fig:2sig}. Finally, after running RFregression.py, we will have a file named regressionResults\_28um.csv. With this file generated, we can run DOI-resolution.py to estimate the average DOI resolutions per DOI. DOI-resolution.py has the boolean omit\_2\_28 = True because as noted in the report, for now, we do not cite the 2 and 28 mm DOI resolutions due to the edge effects.
 
  
 
-'''
+```
 Machine-Learning Firas$ python3 DOI-resolution.py
 
 Average Resolution at 5 mm DOI: 1.83 mm with 88.7% effciency 
@@ -260,4 +260,4 @@ Average Resolution at 10 mm DOI: 0.476 mm with 73.4% effciency
 Average Resolution at 15 mm DOI: 1.554 mm with 63.3% effciency 
 Average Resolution at 20 mm DOI: 0.557 mm with 70.0% effciency 
 Average Resolution at 25 mm DOI: 0.467 mm with 67.7% effcienc
-'''
+```
