@@ -195,7 +195,6 @@ features = ["NCD","ChargeR","ChargeL","ChargeR_zscore","ChargeL_zscore","delta_t
 
 RFclassification.py first calls tfdf.keras.pd\_dataframe\_to\_tf\_dataset() to convert our training and testing data files from pandas DataFrames to keras frames, which is more optimized for use with TensorFlow. After these are defined, the script creates a random forest model using TensorFlow: tfdf.keras.RandomForestModel() with certain parameters set to default according to the results of this report. With the parameter verbose=2, while the model is being trained, many statements are printed out such as the accuracy per tree. After the model has been trained, the script calls the TensorFlow functions model.compile(), model.evaluate(), and model.predict() to evaluate our model and then use it to predict the DOIs from our testing data. Ignoring the verbosity output by TensorFlow, when we call RFclassification.py we see:
 
- 
 
 ```
 Machine-Learning Firas$ python3 RFclassification.py
@@ -223,9 +222,15 @@ Total Accuracy:  0.824
 
  
 
-RFclassification has two boolean variables defined: feature\_importance and confusion\_matrix. When feature\_importance is set to True, the script calls the function getFeatureImportance() from RFassessment.py, which by default computes the mean inverse minimum depth, and will then show a plot like in Figure \ref{fig:IMMD}. With confusion\_matrix set to True, the script calls ConfusionMatrix() from RFassessment.py to plot a confusion matrix just like in Figures \ref{fig:DOI-Confusion-noCut} and \ref{fig:2sig}. RFregression.py follows a very similar setup to RFclassification with task=tfdf.keras.Task.REGRESSION in the tfdf.keras.RandomForestModel() function to grow a regression random forest. An additional feature of this script is that it saves the prediction results to a file named regressionResults\_28um.csv to estimate DOI resolution later on. 
+RFclassification has two boolean variables defined: feature\_importance and confusion\_matrix. When feature\_importance is set to True, the script calls the function getFeatureImportance() from RFassessment.py, which by default computes the mean inverse minimum depth, and will then show a plot like so (depending on which features we actually chose to train our RF model on):
 
- 
+![png](Figures/output_25_1.png)
+
+With confusion\_matrix set to True, the script calls ConfusionMatrix() from RFassessment.py to plot a confusion matrix just like in Figures like below:
+
+![png](Figures/output_28_2.png)
+
+RFregression.py follows a very similar setup to RFclassification with task=tfdf.keras.Task.REGRESSION in the tfdf.keras.RandomForestModel() function to grow a regression random forest. An additional feature of this script is that it saves the prediction results to a file named regressionResults\_28um.csv to estimate DOI resolution later on. 
 
 ```
 Machine-Learning Firas$ python3 RFregression.py
@@ -252,7 +257,6 @@ Saving regression results to file: regressionResults_28um.csv
 As with RFclassification, RFregression also has two boolean variables we can set equal to True to help visualize the performance of our model. The first is feature\_importance, which serves the same purpose as in classification. The second is prediction\_spectra, which when set to True, will display a plot like in the right panels of Figures \ref{fig:DOI-Confusion-noCut} and \ref{fig:2sig}. Finally, after running RFregression.py, we will have a file named regressionResults\_28um.csv. With this file generated, we can run DOI-resolution.py to estimate the average DOI resolutions per DOI. DOI-resolution.py has the boolean omit\_2\_28 = True because as noted in the report, for now, we do not cite the 2 and 28 mm DOI resolutions due to the edge effects.
 
  
-
 ```
 Machine-Learning Firas$ python3 DOI-resolution.py
 
