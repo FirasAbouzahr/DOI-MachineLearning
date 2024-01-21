@@ -8,10 +8,11 @@ occurred. The importance of high-resolution image reconstruction calls for effec
 certain experimental quantites change as a function of depth allowing us to sometimes distinguish between different DOIs and correct parallax error. Results from the analysis have already shown that DOI resolution, a measure of how well our detectors and corresponding analysis can identify DOI, is a function of crystal surface roguhness (more on this later)! In order to optimize the ability and rapidity of 
 identifying DOI, we employ machine learning.
 
-*Data Processing
+# Data Processing
 The data processing pipeline includes five python scripts. MasterProcessor.py, is imported into the four other scripts, and is simply used as a place to define certain reoccurring variables names like file names for which the processed data is saved under. This file also imports the Header files, DOI\_header.py and analysis\_header.py, which define various functions, such as the photopeak fitting function, used throughout the processing codes. For each DOI measured and for every crystal roughness type, there is a separate data file. The first step in the pipeline is to call train\_and\_test.py, which reads-in every DOI file and concatenates them into two datasets, a training and a testing set. At the beginning of train\_and\_test.py, we define three variables: number\_to\_train\_with, number\_to\_test\_with, and shuffle. The first two variables are integers and define how many data points we want to sample per DOI for the training and testing data. Shuffle is a boolean and when set to True, scrambles the created training and testing data. By reading in each DOI data file through a loop, we sample the specified number of data points for each DOI for training and testing and concatenate them into their own pandas DataFrames and then finally save them into their own files. \\ 
 
 Before we call train\_and\_test.py, there are no data files in the Processing directory:
+
 '''
 Processing Firas$ ls
 MasterProcessor.py        clean.sh            readme.md
@@ -20,6 +21,7 @@ photopeakcut.py            z_transform.py
 '''
 
 Now, setting the three variables at the beginning of the script to number\_to\_train\_with = 50000, number\_to\_test\_with = 20000, and shuffle = True and calling train\_and\_test.py:
+
 '''
 Processing Firas$ python3 train_and_test.py
 Original Sample Sizes:
@@ -27,11 +29,7 @@ Original Sample Sizes:
  Testing Set: 140000
 '''
 
- 
-
 The script prints out the sample sizes of the training and testing datasets produced for reference. Now, in the directory we have two files, one for training (trainingdata\_28um.csv) and one for testing (testingdata\_28um.csv) our random forest: 
-
- 
 
 '''
 Processing Firas$ ls
