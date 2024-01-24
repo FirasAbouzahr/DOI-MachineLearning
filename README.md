@@ -254,7 +254,11 @@ Saving regression results to file: regressionResults_28um.csv
 ```
 
 
-As with RFclassification, RFregression also has two boolean variables we can set equal to True to help visualize the performance of our model. The first is feature\_importance, which serves the same purpose as in classification. The second is prediction\_spectra, which when set to True, will display a plot like in the right panels of Figures \ref{fig:DOI-Confusion-noCut} and \ref{fig:2sig}. Finally, after running RFregression.py, we will have a file named regressionResults\_28um.csv. With this file generated, we can run DOI-resolution.py to estimate the average DOI resolutions per DOI. DOI-resolution.py has the boolean omit\_2\_28 = True because as noted in the report, for now, we do not cite the 2 and 28 mm DOI resolutions due to the edge effects.
+As with RFclassification, RFregression also has two boolean variables we can set equal to True to help visualize the performance of our model. The first is feature\_importance, which serves the same purpose as in classification. The second is prediction\_spectra, which when set to True, will display a plot as below:
+
+![png](Figures/output_35_1.png)
+
+Finally, after running RFregression.py, we will have a file named regressionResults\_28um.csv. With this file generated, we can run DOI-resolution.py to estimate the average DOI resolutions per DOI. DOI-resolution.py has the boolean omit\_2\_28 = True because as noted in the report, for now, we do not cite the 2 and 28 mm DOI resolutions due to the edge effects.
 
  
 ```
